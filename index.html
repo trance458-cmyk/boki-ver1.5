@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ 簿記3級仕訳＆帳簿ノック スマート画面版 ⚔️</title>
+    <title>⚔️ 簿記3級仕訳＆帳簿ノック 特訓バトル ⚔️</title>
     <style>
         :root {
             --bg-color: #1a1a1a;
@@ -85,18 +85,24 @@
             color: #ccc;
             margin-bottom: 12px;
         }
+        
+        /* ラジオボタンのレイアウトをGridに変更（PC時は横並び風、スマホ時は綺麗な2列に自動調整） */
         .radio-group {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px 10px;
+            justify-items: start;
+            padding: 0 10px;
         }
+        
         .radio-label {
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            text-align: left;
+            width: 100%;
         }
 
         /* ゲーム画面 */
@@ -236,48 +242,55 @@
             line-height: 1.4;
             border-left: 3px solid var(--accent-yellow);
         }
+
+        /* スマートフォン向け（画面幅 600px 以下）の追加最適化 */
+        @media (max-width: 600px) {
+            .screen { padding: 15px; }
+            h1 { font-size: 22px; margin-bottom: 15px; }
+            .btn { padding: 10px 20px; font-size: 16px; margin: 5px; width: 90%; }
+            .input-grid { grid-template-columns: 1fr; gap: 10px; }
+            .status-panel { font-size: 12px; padding: 10px; }
+            .question-box { font-size: 16px; padding: 15px; }
+            
+            /* 出題数のラジオボタンが5つの場合などはスマホで3列だと崩れるので、一律2列で統一して見やすく */
+            #normalCountOptions { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
 
     <div id="titleScreen" class="screen">
         <h1>⚔️ 簿記3級仕訳＆帳簿ノック 特訓バトル ⚔️</h1>
-        <p style="color: #aaa; margin-bottom: 20px;">【問題文ブラッシュアップ】より分かりやすい本番用表現に対応！</p>
+        <p style="color: #aaa; margin-bottom: 20px; font-size: 14px;">【画面レイアウト調整版】スマホでの操作性を向上！</p>
         
-        <!-- 特訓モード選択 -->
         <div class="setting-box">
             <div class="setting-title">① 特訓モードを選択してください</div>
             <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="gameMode" value="normal" checked onchange="toggleModeUI()"> 通常仕訳 (厳選50問)</label>
+                <label class="radio-label"><input type="radio" name="gameMode" value="normal" checked onchange="toggleModeUI()"> 通常仕訳 (50問)</label>
                 <label class="radio-label"><input type="radio" name="gameMode" value="settlement" onchange="toggleModeUI()"> 📊 決算整理 (30問)</label>
-                <label class="radio-label"><input type="radio" name="gameMode" value="books" onchange="toggleModeUI()"> 📖 主要簿・補助簿 (20問)</label>
-                <label class="radio-label" style="color: var(--accent-yellow); font-weight: bold;"><input type="radio" name="gameMode" value="randomall" onchange="toggleModeUI()"> 🌀 全3種総合ランダム (100問)</label>
+                <label class="radio-label"><input type="radio" name="gameMode" value="books" onchange="toggleModeUI()"> 📖 帳簿知識 (20問)</label>
+                <label class="radio-label" style="color: var(--accent-yellow); font-weight: bold;"><input type="radio" name="gameMode" value="randomall" onchange="toggleModeUI()"> 🌀 総合ランダム</label>
             </div>
         </div>
 
-        <!-- 出題数選択 -->
         <div class="setting-box" id="numQuestionsBox">
             <div class="setting-title">② 出題数を選択してください</div>
-            <!-- 通常 -->
             <div class="radio-group" id="normalCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCount" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCount" value="20"> 20問</label>
                 <label class="radio-label"><input type="radio" name="questionCount" value="30" checked> 30問</label>
                 <label class="radio-label"><input type="radio" name="questionCount" value="40"> 40問</label>
-                <label class="radio-label"><input type="radio" name="questionCount" value="50"> 全50問</label>
+                <label class="radio-label" style="grid-column: span 2;"><input type="radio" name="questionCount" value="50"> 全50問</label>
             </div>
-            <!-- 決算 -->
             <div class="radio-group hidden" id="settlementCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCountSettlement" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCountSettlement" value="20"> 20問</label>
                 <label class="radio-label"><input type="radio" name="questionCountSettlement" value="30" checked> 全30問</label>
             </div>
-            <!-- 帳簿 -->
             <div class="radio-group hidden" id="booksCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCountBooks" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCountBooks" value="20" checked> 全20問</label>
             </div>
-            <!-- 全総合ランダム -->
             <div class="radio-group hidden" id="randomallCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="30" checked> 30問</label>
@@ -298,14 +311,12 @@
             <div class="status-item">ハイスコア: <span id="lblHighScore">0</span></div>
             <div class="status-item">出題順: <button id="btnOrderToggle" style="padding:2px 8px; background:#3498db; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="toggleOrderMode()">順番通り</button></div>
             <div class="status-item">タイマー機能: <button id="btnTimerToggle" style="padding:2px 8px; background:#444; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="toggleTimer()">OFF</button></div>
-            <div class="status-item">前回タイム: <span id="lblTime">- 秒</span></div>
+            <div class="status-item" style="grid-column: span 2;">前回タイム: <span id="lblTime">- 秒</span></div>
         </div>
 
         <div class="question-box" id="questionText">問題文がここに表示されます。</div>
 
-        <!-- 【通常・決算用】仕訳入力エリア -->
         <div class="input-grid" id="journalInputArea">
-            <!-- 借方 -->
             <div class="input-group">
                 <h3>【借方】（左側）</h3>
                 <div id="drRow1" class="row-container">
@@ -318,7 +329,6 @@
                     <div class="row-title">3行目</div><select id="selDrSubject3"></select><input type="number" id="numDrAmount3" placeholder="金額">
                 </div>
             </div>
-            <!-- 貸方 -->
             <div class="input-group">
                 <h3>【貸方】（右側）</h3>
                 <div id="crRow1" class="row-container">
@@ -333,7 +343,6 @@
             </div>
         </div>
 
-        <!-- 【帳簿クイズ専用】選択エリア -->
         <div class="book-input-area hidden" id="bookInputArea">
             <h3>選択肢から正しい答えを選んでください</h3>
             <div class="row-title" id="lblAnsTitle1">解答欄 1</div>
@@ -353,7 +362,6 @@
         </div>
     </div>
 
-    <!-- レビュー画面 -->
     <div id="reviewScreen" class="screen hidden">
         <h1 style="color: var(--accent-blue);">📊 特訓結果レビュー</h1>
         <div class="status-panel" style="grid-template-columns: repeat(3, 1fr);">
@@ -378,11 +386,11 @@
             { id: 7, text: "現金過不足のうち¥3,000は、通信費の記入漏れと判明した。", dr: [{sub:"通信費", amt:3000}], cr: [{sub:"現金過不足", amt:3000}], exp: "過不足の原因が分かったため、現金過不足を相殺し、正しい費用を計上します。" },
             { id: 8, text: "商品¥40,000を売り上げ、代金は注文時に受け取っていた手付金を充当した。", dr: [{sub:"前受金", amt:40000}], cr: [{sub:"売上", amt:40000}], exp: "事前に預かっていた義務（負債の「前受金」）を売上に振り替えます。" },
             { id: 9, text: "商品¥60,000を仕入れるため、内金¥10,000を当座預金から支払った。", dr: [{sub:"前払金", amt:10000}], cr: [{sub:"当座預金", amt:10000}], exp: "注文時の手付金は、後で商品を受け取る権利（資産の「前払金」）となります。" },
-            { id: 10, text: "従業員の給料¥180,000から所得税の源泉徴収分¥10,000を差し引き、残額を現金で支給した。", dr: [{sub:"給料", amt:180000}], cr: [{sub:"預り金", amt:10000},{sub:"現金", amt:170000}], exp: "天引きした税金は負債の「預り金」で処理します。" },
+            { id: 10, text: "従業員の給料¥180,000から所得税の源源徴収分¥10,000を差し引き、残額を現金で支給した。", dr: [{sub:"給料", amt:180000}], cr: [{sub:"預り金", amt:10000},{sub:"現金", amt:170000}], exp: "天引きした税金は負債の「預り金」で処理します。" },
             { id: 11, text: "従業員が負担すべき社会保険料¥8,000を、普通預金から支払った。", dr: [{sub:"預り金", amt:8000}], cr: [{sub:"普通預金", amt:8000}], exp: "一時的に預かっていたお金（負債の「預り金」）の返済・納付です。" },
             { id: 12, text: "出張する社員に、旅費の概算額¥20,000を現金で手渡した。", dr: [{sub:"仮払金", amt:20000}], cr: [{sub:"現金", amt:20000}], exp: "金額が未確定の概算支給は、一時的な資産として「仮払金」とします。" },
             { id: 13, text: "出張から戻った社員の旅費精算を行い、実際の旅費¥18,000を差し引いた残額¥2,000を現金で回収した。", dr: [{sub:"旅費交通費", amt:18000},{sub:"現金", amt:2000}], cr: [{sub:"仮払金", amt:20000}], exp: "仮払金を取り消し、確定した費用と戻った現金を借方に計上します。" },
-            { id: 14, text: "パソコン¥120,000を購入し、代金は来月末に支払うこととした。", dr: [{sub:"備品", amt:120000}], cr: [{sub:"未払金", amt:120000}], exp: "商品以外の物品購入に伴う未払代金は「未払金」を使用します。" },
+            { id: 14, text: "パソコン¥120,000を購入し、代金は来月末に支払うこととした。", dr: [{sub:"備品", amt:120000}], cr: [{sub:"未払金", amt:120000}], exp: "商品以外の物品購入に伴う未払代金は「未払金」を使用します Rhodes。" },
             { id: 15, text: "不要になった古い事務机を¥5,000で売却し、代金は来月受け取ることにした（※帳簿価格と同額とする）。", dr: [{sub:"未収金", amt:5000}], cr: [{sub:"備品", amt:5000}], exp: "商品以外の物品を売却した未収代金は「未収金」を使います。" },
             { id: 16, text: "得意先へ送る商品の発送費¥2,000を現金で支払った（当店負担）。", dr: [{sub:"支払発送費", amt:2000}], cr: [{sub:"現金", amt:2000}], exp: "売主負担の発送運賃は、費用の「支払発送費」となります。" },
             { id: 17, text: "店舗の電気代¥8,500が普通預金口座から引き落とされた。", dr: [{sub:"水道光熱費", amt:8500}], cr: [{sub:"普通預金", amt:8500}], exp: "電気・ガス・水道代は費用の「水道光熱費」として処理します。" },
@@ -395,7 +403,6 @@
             { id: 24, text: "銀行から借入金¥200,000を利息¥3,000とともに当座預金から返済した。", dr: [{sub:"借入金", amt:200000},{sub:"支払利息", amt:3000}], cr: [{sub:"当座預金", amt:203000}], exp: "元本の返済（負債の減少）と利息の支払い（費用の発生）です。" },
             { id: 25, text: "収入印紙¥4,000を現金で購入し、直ちに使用した。", dr: [{sub:"租税公課", amt:4000}], cr: [{sub:"現金", amt:4000}], exp: "収入印紙や税金の支払いは、費用の「租税公課」勘定になります。" },
             { id: 26, text: "取引先への贈答品代¥8,000を現金で支払った。", dr: [{sub:"交際費", amt:8000}], cr: [{sub:"現金", amt:8000}], exp: "得意先との関係を円滑にするコストは費用の「交際費」です。" },
-            { id: 27, text: "得意先から注文を受け、商品¥100,000の注文書を受け取った。", dr: [{sub:"なし", amt:0}], cr: [{sub:"なし", amt:0}], exp: "注文の引き受けだけでは簿記上の「取引」にあたらないため、仕訳なしです。" },
             { id: 28, text: "会計ソフトの月額利用料¥5,000が普通預金から引き落とされた。", dr: [{sub:"通信費", amt:5000}], cr: [{sub:"普通預金", amt:5000}], exp: "ネットやクラウド利用料、電話代などは費用の「通信費」です。" },
             { id: 29, text: "火災保険料の1年分¥24,000を現金で支払った。", dr: [{sub:"支払保険料", amt:24000}], cr: [{sub:"現金", amt:24000}], exp: "支払時はまず一旦、全額を費用の「支払保険料」として処理します。" },
             { id: 30, text: "文房具などの消耗品¥3,000を現金で購入し、費用として処理した。", dr: [{sub:"消耗品費", amt:3000}], cr: [{sub:"現金", amt:3000}], exp: "購入時に費用処理する指定のため、借方は「消耗品費」となります。" },
@@ -426,7 +433,7 @@
             { id: 51, text: "【決算整理】期首商品棚卸高は¥40,000である。仕入勘定の行で売上原価を計算するため、期首商品を振り替える。", dr: [{sub:"仕入", amt:40000}], cr: [{sub:"繰越商品", amt:40000}], exp: "決算整理仕訳の「しー・くり」です。期首商品棚卸高を「仕入」勘定へ振り替えます。" },
             { id: 52, text: "【決算整理】期末商品棚卸高は¥55,000である。仕入勘定から期末商品棚卸高を繰越商品勘定に振り替える。", dr: [{sub:"繰越商品", amt:55000}], cr: [{sub:"仕入", amt:55000}], exp: "決算整理仕訳の「くり・しー」です。売れ残った商品を次期へ繰り越すため「繰越商品」にします。" },
             { id: 53, text: "【決算整理】期末の売掛金残高¥300,000に対して、1%の貸倒引当金を差額補充法で設定する。なお、現在の貸倒引当金残高は¥1,200である。", dr: [{sub:"貸倒引当金繰入", amt:1800}], cr: [{sub:"貸倒引当金", amt:1800}], exp: "目標額は3,000円。現在残高1,200円を引いた差額の1,800円を「貸倒引当金繰入」で補充します。" },
-            { id: 54, text: "【決算整理】建物（取得原価¥2,000,000、残存価格ゼロ、耐用年数20年）について、定額法により当期の減価償償費を計上する（間接法）。", dr: [{sub:"減価償却費", amt:100000}], cr: [{sub:"建物減価償却累計額", amt:100000}], exp: "2,000,000 ÷ 20年 = 100,000円。貸方は「建物減価償却累計額」を使用します。" },
+            { id: 54, text: "【決算整理】建物（取得原価¥2,000,000、残存価格ゼロ、耐用年数20年）について、定額法により当期の減価償却費を計上する（間接法）。", dr: [{sub:"減価償却費", amt:100000}], cr: [{sub:"建物減価償却累計額", amt:100000}], exp: "2,000,000 ÷ 20年 = 100,000円。貸方は「建物減価償却累計額」を使用します。" },
             { id: 55, text: "【決算整理】当期中に支払った保険料のうち、翌期に属する未経過分（前払額）が¥8,000あるため、これを繰り延べる。", dr: [{sub:"前払保険料", amt:8000}], cr: [{sub:"支払保険料", amt:8000}], exp: "次期の分を当期の費用からマイナスし、資産の「前払保険料」へ振り替えます。" },
             { id: 56, text: "【決算整理】当期に属する店舗家賃の未払額が¥20,000あるため、これを計上する。", dr: [{sub:"支払家賃", amt:20000}], cr: [{sub:"未払家賃", amt:20000}], exp: "発生しているが未払いの家賃を、当期の費用（借方）とし、貸方に負債の「未払家賃」を計上します。" },
             { id: 57, text: "【決算整理】貸付金に対する受取利息の未収額が¥3,500あるため、これを計上する。", dr: [{sub:"未収利息", amt:3500}], cr: [{sub:"受取利息", amt:3500}], exp: "当期に属する未受けの利息を収益（貸方）とし、相手勘定を資産の「未収利息」とします。" },
