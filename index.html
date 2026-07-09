@@ -41,10 +41,11 @@
         .hidden { display: none !important; }
 
         h1 {
-            font-size: 28px;
+            font-size: 26px;
             color: var(--accent-yellow);
             margin-bottom: 25px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.3;
         }
 
         .btn {
@@ -86,13 +87,13 @@
             margin-bottom: 12px;
         }
         
-        /* ラジオボタンのレイアウトをGridに変更（PC時は横並び風、スマホ時は綺麗な2列に自動調整） */
+        /* PC時の標準グリッド配置 */
         .radio-group {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px 10px;
+            gap: 12px 15px;
             justify-items: start;
-            padding: 0 10px;
+            padding: 5px 10px;
         }
         
         .radio-label {
@@ -100,9 +101,17 @@
             font-size: 15px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             text-align: left;
             width: 100%;
+            white-space: nowrap; /* 文字の自動改行を強制防止 */
+        }
+        
+        .radio-label input[type="radio"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+            flex-shrink: 0; /* ラジオボタンが潰れないように固定 */
         }
 
         /* ゲーム画面 */
@@ -161,7 +170,7 @@
             margin: 5px 0 2px 0;
         }
 
-        select, input {
+        select, input[type="number"] {
             width: 100%;
             padding: 10px;
             background-color: #111;
@@ -243,17 +252,27 @@
             border-left: 3px solid var(--accent-yellow);
         }
 
-        /* スマートフォン向け（画面幅 600px 以下）の追加最適化 */
+        /* 📱 スマートフォン向け（画面幅 600px 以下）の超強力な最適化表示 */
         @media (max-width: 600px) {
-            .screen { padding: 15px; }
-            h1 { font-size: 22px; margin-bottom: 15px; }
-            .btn { padding: 10px 20px; font-size: 16px; margin: 5px; width: 90%; }
-            .input-grid { grid-template-columns: 1fr; gap: 10px; }
-            .status-panel { font-size: 12px; padding: 10px; }
-            .question-box { font-size: 16px; padding: 15px; }
+            .screen { padding: 15px 10px; width: 98%; }
+            h1 { font-size: 20px; margin-bottom: 15px; }
             
-            /* 出題数のラジオボタンが5つの場合などはスマホで3列だと崩れるので、一律2列で統一して見やすく */
-            #normalCountOptions { grid-template-columns: repeat(2, 1fr); }
+            /* スマホ時は無理に横並びにせず、完全に「縦1列」にして見やすさを最優先 */
+            .radio-group { 
+                grid-template-columns: 1fr !important; 
+                gap: 14px; 
+                padding: 5px;
+            }
+            
+            .radio-label { 
+                font-size: 16px; /* タップしやすいよう少し文字を大きく */
+                white-space: normal; /* 1列化したので長い文章は自然に下へ改行させる */
+            }
+
+            .btn { padding: 12px 20px; font-size: 16px; margin: 6px auto; width: 95%; display: block; }
+            .input-grid { grid-template-columns: 1fr; gap: 12px; }
+            .status-panel { font-size: 12px; padding: 10px; }
+            .question-box { font-size: 15px; padding: 12px; }
         }
     </style>
 </head>
@@ -261,8 +280,9 @@
 
     <div id="titleScreen" class="screen">
         <h1>⚔️ 簿記3級仕訳＆帳簿ノック 特訓バトル ⚔️</h1>
-        <p style="color: #aaa; margin-bottom: 20px; font-size: 14px;">【画面レイアウト調整版】スマホでの操作性を向上！</p>
+        <p style="color: #aaa; margin-bottom: 25px; font-size: 13px;">【スマホ表示完全最適化版】快適に周回できます！</p>
         
+        <!-- 特訓モード選択 -->
         <div class="setting-box">
             <div class="setting-title">① 特訓モードを選択してください</div>
             <div class="radio-group">
@@ -273,24 +293,29 @@
             </div>
         </div>
 
+        <!-- 出題数選択 -->
         <div class="setting-box" id="numQuestionsBox">
             <div class="setting-title">② 出題数を選択してください</div>
+            <!-- 通常 -->
             <div class="radio-group" id="normalCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCount" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCount" value="20"> 20問</label>
                 <label class="radio-label"><input type="radio" name="questionCount" value="30" checked> 30問</label>
                 <label class="radio-label"><input type="radio" name="questionCount" value="40"> 40問</label>
-                <label class="radio-label" style="grid-column: span 2;"><input type="radio" name="questionCount" value="50"> 全50問</label>
+                <label class="radio-label"><input type="radio" name="questionCount" value="50"> 全50問</label>
             </div>
+            <!-- 決算 -->
             <div class="radio-group hidden" id="settlementCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCountSettlement" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCountSettlement" value="20"> 20問</label>
                 <label class="radio-label"><input type="radio" name="questionCountSettlement" value="30" checked> 全30問</label>
             </div>
+            <!-- 帳簿 -->
             <div class="radio-group hidden" id="booksCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCountBooks" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCountBooks" value="20" checked> 全20問</label>
             </div>
+            <!-- 全総合ランダム -->
             <div class="radio-group hidden" id="randomallCountOptions">
                 <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="10"> 10問</label>
                 <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="30" checked> 30問</label>
@@ -316,7 +341,9 @@
 
         <div class="question-box" id="questionText">問題文がここに表示されます。</div>
 
+        <!-- 【通常・決算用】仕訳入力エリア -->
         <div class="input-grid" id="journalInputArea">
+            <!-- 借方 -->
             <div class="input-group">
                 <h3>【借方】（左側）</h3>
                 <div id="drRow1" class="row-container">
@@ -329,6 +356,7 @@
                     <div class="row-title">3行目</div><select id="selDrSubject3"></select><input type="number" id="numDrAmount3" placeholder="金額">
                 </div>
             </div>
+            <!-- 貸方 -->
             <div class="input-group">
                 <h3>【貸方】（右側）</h3>
                 <div id="crRow1" class="row-container">
@@ -343,6 +371,7 @@
             </div>
         </div>
 
+        <!-- 【帳簿クイズ専用】選択エリア -->
         <div class="book-input-area hidden" id="bookInputArea">
             <h3>選択肢から正しい答えを選んでください</h3>
             <div class="row-title" id="lblAnsTitle1">解答欄 1</div>
@@ -362,6 +391,7 @@
         </div>
     </div>
 
+    <!-- レビュー画面 -->
     <div id="reviewScreen" class="screen hidden">
         <h1 style="color: var(--accent-blue);">📊 特訓結果レビュー</h1>
         <div class="status-panel" style="grid-template-columns: repeat(3, 1fr);">
@@ -386,11 +416,11 @@
             { id: 7, text: "現金過不足のうち¥3,000は、通信費の記入漏れと判明した。", dr: [{sub:"通信費", amt:3000}], cr: [{sub:"現金過不足", amt:3000}], exp: "過不足の原因が分かったため、現金過不足を相殺し、正しい費用を計上します。" },
             { id: 8, text: "商品¥40,000を売り上げ、代金は注文時に受け取っていた手付金を充当した。", dr: [{sub:"前受金", amt:40000}], cr: [{sub:"売上", amt:40000}], exp: "事前に預かっていた義務（負債の「前受金」）を売上に振り替えます。" },
             { id: 9, text: "商品¥60,000を仕入れるため、内金¥10,000を当座預金から支払った。", dr: [{sub:"前払金", amt:10000}], cr: [{sub:"当座預金", amt:10000}], exp: "注文時の手付金は、後で商品を受け取る権利（資産の「前払金」）となります。" },
-            { id: 10, text: "従業員の給料¥180,000から所得税の源源徴収分¥10,000を差し引き、残額を現金で支給した。", dr: [{sub:"給料", amt:180000}], cr: [{sub:"預り金", amt:10000},{sub:"現金", amt:170000}], exp: "天引きした税金は負債の「預り金」で処理します。" },
+            { id: 10, text: "従業員の給料¥180,000から所得税の源泉徴収分¥10,000を差し引き、残額を現金で支給した。", dr: [{sub:"給料", amt:180000}], cr: [{sub:"預り金", amt:10000},{sub:"現金", amt:170000}], exp: "天引きした税金は負債の「預り金」で処理します。" },
             { id: 11, text: "従業員が負担すべき社会保険料¥8,000を、普通預金から支払った。", dr: [{sub:"預り金", amt:8000}], cr: [{sub:"普通預金", amt:8000}], exp: "一時的に預かっていたお金（負債の「預り金」）の返済・納付です。" },
             { id: 12, text: "出張する社員に、旅費の概算額¥20,000を現金で手渡した。", dr: [{sub:"仮払金", amt:20000}], cr: [{sub:"現金", amt:20000}], exp: "金額が未確定の概算支給は、一時的な資産として「仮払金」とします。" },
             { id: 13, text: "出張から戻った社員の旅費精算を行い、実際の旅費¥18,000を差し引いた残額¥2,000を現金で回収した。", dr: [{sub:"旅費交通費", amt:18000},{sub:"現金", amt:2000}], cr: [{sub:"仮払金", amt:20000}], exp: "仮払金を取り消し、確定した費用と戻った現金を借方に計上します。" },
-            { id: 14, text: "パソコン¥120,000を購入し、代金は来月末に支払うこととした。", dr: [{sub:"備品", amt:120000}], cr: [{sub:"未払金", amt:120000}], exp: "商品以外の物品購入に伴う未払代金は「未払金」を使用します Rhodes。" },
+            { id: 14, text: "パソコン¥120,000を購入し、代金は来月末に支払うこととした。", dr: [{sub:"備品", amt:120000}], cr: [{sub:"未払金", amt:120000}], exp: "商品以外の物品購入に伴う未払代金は「未払金」を使用します。" },
             { id: 15, text: "不要になった古い事務机を¥5,000で売却し、代金は来月受け取ることにした（※帳簿価格と同額とする）。", dr: [{sub:"未収金", amt:5000}], cr: [{sub:"備品", amt:5000}], exp: "商品以外の物品を売却した未収代金は「未収金」を使います。" },
             { id: 16, text: "得意先へ送る商品の発送費¥2,000を現金で支払った（当店負担）。", dr: [{sub:"支払発送費", amt:2000}], cr: [{sub:"現金", amt:2000}], exp: "売主負担の発送運賃は、費用の「支払発送費」となります。" },
             { id: 17, text: "店舗の電気代¥8,500が普通預金口座から引き落とされた。", dr: [{sub:"水道光熱費", amt:8500}], cr: [{sub:"普通預金", amt:8500}], exp: "電気・ガス・水道代は費用の「水道光熱費」として処理します。" },
@@ -439,7 +469,7 @@
             { id: 57, text: "【決算整理】貸付金に対する受取利息の未収額が¥3,500あるため、これを計上する。", dr: [{sub:"未収利息", amt:3500}], cr: [{sub:"受取利息", amt:3500}], exp: "当期に属する未受けの利息を収益（貸方）とし、相手勘定を資産の「未収利息」とします。" },
             { id: 58, text: "【決算整理】当期に受け取った手数料のうち、翌期分に属する前受額が¥5,000あるため、当期の収益から繰り延べる。", dr: [{sub:"受取手数料", amt:5000}], cr: [{sub:"前受手数料", amt:5000}], exp: "翌期分の収益を当期から差し引くため借方「受取手数料」、貸方を負債の「前受手数料」とします。" },
             { id: 59, text: "【決算整理】期中に消耗品費（費用）として処理していた文房具のうち、期末の未使用残高が¥2,000あったため、資産に振り替える。", dr: [{sub:"消耗品", amt:2000}], cr: [{sub:"消耗品費", amt:2000}], exp: "使わなかった消耗品を資産の「消耗品」に振り替え、その分「消耗品費」を減少させます。" },
-            { id: 60, text: "【決算整理】期中に発生した現金過不足の不足額（借方残高）¥1,500について、決算日まで原因が判明しなかったため、適切な勘定へ振り替える。", dr: [{sub:"雑損", amt:1500}], cr: [{sub:"現金過不足", amt:1500}], exp: "原因不明の現金不足（借方残高）は、営業外の損失である「雑損」に振り替えます。" },
+            { id: 60, text: "【決算整理】期中に発生した現金過不足の不足額（借方残高）¥1,500について、決算日まで原因が判明しなかったため、適切な勘定へ振り替える。", dr: [{sub:"雑損", amt:1500}], cr: [{sub:"現金過不足", amt:1500}], exp: "原因不明 of 現金不足（借方残高）は、営業外の損失である「雑損」に振り替えます。" },
             { id: 61, text: "【決算整理】期中に発生した現金過不足の過剰額（貸方残高）¥3,000について、決算日まで原因が判明しなかったため、適切な勘定へ振り替える。", dr: [{sub:"現金過不足", amt:3000}], cr: [{sub:"雑益", amt:3000}], exp: "原因不明の現金過剰（貸方残高）は、営業外の利益である「雑益」に振り替えます。" },
             { id: 62, text: "【決算整理】決算日において、当座預金勘定の帳簿残高がマイナス¥12,000となっているため、適切な負債の勘定に振り替える。", dr: [{sub:"当座預金", amt:12000}], cr: [{sub:"当座借越", amt:12000}], exp: "当座預金のマイナスを決算書上正しく報告するため、貸方に負債の「当座借越」を計上します。" },
             { id: 63, text: "【決算手続】決算にあたり、当期の確定消費税額を計算した。預り消費税¥150,000、仮払消費税¥90,000の差額を未払消費税として計上する。", dr: [{sub:"預り消費税", amt:150000}], cr: [{sub:"仮払消費税", amt:90000},{sub:"未払消費税", amt:60000}], exp: "預り消費税と仮払消費税を相殺し、未払分を「未払消費税」として確定させます。" },
@@ -469,7 +499,7 @@
             { id: 83, isBook: true, text: "商品¥50,000を売り上げ、代金は掛けとした。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["商品有高帳", "売掛金元帳"], exp: "商品の売上げにより「商品有高帳」、掛け取引により得意先ごとの残高を管理する「売掛金元帳（得意先元帳）」に記入されます。" },
             { id: 84, isBook: true, text: "A店から商品¥30,000を仕入れ、代金は掛けとした。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["商品有高帳", "買掛金元帳"], exp: "商品の仕入れにより「商品有高帳」、掛けでの仕入れにより仕入先別の残高を管理する「買掛金元帳（仕入先元帳）」に記入されます。" },
             { id: 85, isBook: true, text: "得意先より売掛金¥20,000の回収として、約束手形を受け取った。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["受取手形記入帳", "売掛金元帳"], exp: "約束手形を受け取ったため「受取手形記入帳」、売掛金が減少したため得意先管理の「売掛金元帳」へ記入されます。" },
-            { id: 86, isBook: true, text: "仕入先へ買掛金支払のため、約束手形を振り出した。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["支払手形記入帳", "買掛金元帳"], exp: "手形を振り出したので「支払手形記入帳」、買掛金が減少したので仕入先管理の「買掛金元帳」へ記入されます。" },
+            { id: 86, isBook: true, text: "仕入先へ買掛金支払のため、約束手形を振り出した。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["支払手形記入帳", "買掛金元帳"], exp: "手形を振り出したので「支払手形記入帳 Gord」、買掛金が減少したので仕入先管理の「買掛金元帳」へ記入されます。" },
             { id: 87, isBook: true, text: "店舗の家賃¥15,000を当座預金口座から支払った。このとき記入される【補助簿】の名前は何か？", labels: ["補助簿名"], ans: ["当座預金出納帳"], exp: "当座預金の預け入れや引き出しを細かく記録する補助簿は「当座預金出納帳」です。" },
             { id: 88, isBook: true, text: "商品の仕入運賃¥3,000を小口現金の係から現金で支払った。このとき記入される【補助簿】の名前は何か？", labels: ["補助簿名"], ans: ["小口現金出納帳"], exp: "小口現金の支払いや補給を細かく記録する補助簿は「小口現金出納帳」です。" },
             { id: 89, isBook: true, text: "固定資産（建物や備品など）の取得原価や減価償却の履歴を個別に管理するための【補助簿】は何か？", labels: ["補助簿名"], ans: ["固定資産台帳"], exp: "固定資産台帳は、建物・備品・車両などの有形固定資産の状況を個別に詳細管理する補助簿です。" },
