@@ -1,0 +1,955 @@
+[index.html](https://github.com/user-attachments/files/30227254/index.html)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ 簿記3級仕訳＆帳簿ノック 特訓バトル ⚔️</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --accent-green: #2ecc71;
+            --accent-blue: #3498db;
+            --accent-red: #e74c3c;
+            --accent-yellow: #f1c40f;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .screen {
+            background-color: var(--container-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            padding: 30px;
+            width: 95%;
+            max-width: 800px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .hidden { display: none !important; }
+
+        h1 {
+            font-size: 26px;
+            color: var(--accent-yellow);
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.3;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #444, #222);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #000, 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-start { background: linear-gradient(135deg, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e7e34; }
+        .btn-end { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 0 #962d22; }
+        .btn-action { background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 4px 0 #1c5378; }
+
+        .setting-box {
+            background-color: #222;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px auto;
+            max-width: 550px;
+        }
+        .setting-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ccc;
+            margin-bottom: 12px;
+        }
+        
+        /* PC時の標準グリッド配置 */
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px 15px;
+            justify-items: start;
+            padding: 5px 10px;
+        }
+        
+        .radio-label {
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+            width: 100%;
+            white-space: nowrap; /* 文字の自動改行を強制防止 */
+        }
+        
+        .radio-label input[type="radio"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+            flex-shrink: 0; /* ラジオボタンが潰れないように固定 */
+        }
+
+        /* ゲーム画面 */
+        .status-panel {
+            background-color: #222;
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .status-item span { font-weight: bold; color: var(--accent-yellow); }
+
+        .question-box {
+            background-color: #1e272e;
+            border-left: 5px solid var(--accent-blue);
+            padding: 20px;
+            border-radius: 6px;
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 25px;
+            min-height: 80px;
+            color: #eccc68;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        .input-group h3 { margin: 0 0 10px 0; font-size: 16px; color: #aaa; text-align: center; }
+        
+        .row-container {
+            margin-bottom: 12px;
+        }
+
+        .row-title {
+            font-size: 12px;
+            color: var(--accent-yellow);
+            text-align: left;
+            margin: 5px 0 2px 0;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #111;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+            font-size: 15px;
+            box-sizing: border-box;
+            margin-bottom: 4px;
+        }
+
+        /* 帳簿クイズ専用エリア */
+        .book-input-area {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .book-input-area h3 { margin: 0 0 15px 0; font-size: 16px; color: var(--accent-yellow); text-align: center; }
+
+        .controls {
+            margin-top: 20px;
+            border-top: 1px solid #444;
+            padding-top: 15px;
+        }
+
+        /* レビュー画面 */
+        .review-container {
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+
+        .review-item {
+            background-color: #222;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 6px solid #555;
+        }
+
+        .review-item.correct { border-left-color: var(--accent-green); }
+        .review-item.incorrect { border-left-color: var(--accent-red); }
+
+        .review-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .correct .review-badge { background-color: var(--accent-green); color: #fff; }
+        .incorrect .review-badge { background-color: var(--accent-red); color: #fff; }
+
+        .review-text { font-size: 15px; color: #fff; margin-bottom: 10px; font-weight: bold; }
+        .review-detail {
+            font-size: 13px;
+            color: #ccc;
+            background-color: #111;
+            padding: 8px;
+            border-radius: 4px;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+        .review-detail span { color: var(--accent-yellow); }
+        
+        .review-explanation {
+            font-size: 13px;
+            color: #eccc68;
+            background-color: #1e272e;
+            padding: 8px;
+            border-radius: 4px;
+            line-height: 1.4;
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        /* 📱 スマートフォン向け（画面幅 600px 以下）の超強力な最適化表示 */
+        @media (max-width: 600px) {
+            .screen { padding: 15px 10px; width: 98%; }
+            h1 { font-size: 20px; margin-bottom: 15px; }
+            
+            /* スマホ時は無理に横並びにせず、完全に「縦1列」にして見やすさを最優先 */
+            .radio-group { 
+                grid-template-columns: 1fr !important; 
+                gap: 14px; 
+                padding: 5px;
+            }
+            
+            .radio-label { 
+                font-size: 16px; /* タップしやすいよう少し文字を大きく */
+                white-space: normal; /* 1列化したので長い文章は自然に下へ改行させる */
+            }
+
+            .btn { padding: 12px 20px; font-size: 16px; margin: 6px auto; width: 95%; display: block; }
+            .input-grid { grid-template-columns: 1fr; gap: 12px; }
+            .status-panel { font-size: 12px; padding: 10px; }
+            .question-box { font-size: 15px; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="titleScreen" class="screen">
+        <h1>⚔️ 簿記3級仕訳＆帳簿ノック 特訓バトル ⚔️</h1>
+        <p style="color: #aaa; margin-bottom: 25px; font-size: 13px;">【スマホ表示完全最適化版】快適に周回できます！</p>
+        
+        <!-- 特訓モード選択 -->
+        <div class="setting-box">
+            <div class="setting-title">① 特訓モードを選択してください</div>
+            <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="gameMode" value="normal" checked onchange="toggleModeUI()"> 通常仕訳 (50問)</label>
+                <label class="radio-label"><input type="radio" name="gameMode" value="settlement" onchange="toggleModeUI()"> 📊 決算整理 (30問)</label>
+                <label class="radio-label"><input type="radio" name="gameMode" value="books" onchange="toggleModeUI()"> 📖 帳簿知識 (20問)</label>
+                <label class="radio-label" style="color: var(--accent-yellow); font-weight: bold;"><input type="radio" name="gameMode" value="randomall" onchange="toggleModeUI()"> 🌀 総合ランダム</label>
+            </div>
+        </div>
+
+        <!-- 出題数選択 -->
+        <div class="setting-box" id="numQuestionsBox">
+            <div class="setting-title">② 出題数を選択してください</div>
+            <!-- 通常 -->
+            <div class="radio-group" id="normalCountOptions">
+                <label class="radio-label"><input type="radio" name="questionCount" value="10"> 10問</label>
+                <label class="radio-label"><input type="radio" name="questionCount" value="20"> 20問</label>
+                <label class="radio-label"><input type="radio" name="questionCount" value="30" checked> 30問</label>
+                <label class="radio-label"><input type="radio" name="questionCount" value="40"> 40問</label>
+                <label class="radio-label"><input type="radio" name="questionCount" value="50"> 全50問</label>
+            </div>
+            <!-- 決算 -->
+            <div class="radio-group hidden" id="settlementCountOptions">
+                <label class="radio-label"><input type="radio" name="questionCountSettlement" value="10"> 10問</label>
+                <label class="radio-label"><input type="radio" name="questionCountSettlement" value="20"> 20問</label>
+                <label class="radio-label"><input type="radio" name="questionCountSettlement" value="30" checked> 全30問</label>
+            </div>
+            <!-- 帳簿 -->
+            <div class="radio-group hidden" id="booksCountOptions">
+                <label class="radio-label"><input type="radio" name="questionCountBooks" value="10"> 10問</label>
+                <label class="radio-label"><input type="radio" name="questionCountBooks" value="20" checked> 全20問</label>
+            </div>
+            <!-- 全総合ランダム -->
+            <div class="radio-group hidden" id="randomallCountOptions">
+                <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="10"> 10問</label>
+                <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="30" checked> 30問</label>
+                <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="50"> 50問</label>
+                <label class="radio-label"><input type="radio" name="questionCountRandomAll" value="100"> 全100問</label>
+            </div>
+        </div>
+
+        <button class="btn btn-start" onclick="startGame()">ゲーム開始</button><br>
+        <button class="btn btn-end" onclick="endGameTitle()">ゲーム終了</button>
+    </div>
+
+    <div id="gameScreen" class="screen hidden">
+        <div class="status-panel">
+            <div class="status-item">レベル: <span id="lblLevel">Lv.1（未経験者）</span></div>
+            <div class="status-item">総正解数(EXP): <span id="lblExp">0</span></div>
+            <div class="status-item">現在コンボ: <span id="lblCombo">0</span></div>
+            <div class="status-item">ハイスコア: <span id="lblHighScore">0</span></div>
+            <div class="status-item">出題順: <button id="btnOrderToggle" style="padding:2px 8px; background:#3498db; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="toggleOrderMode()">順番通り</button></div>
+            <div class="status-item">タイマー機能: <button id="btnTimerToggle" style="padding:2px 8px; background:#444; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="toggleTimer()">OFF</button></div>
+            <div class="status-item" style="grid-column: span 2;">前回タイム: <span id="lblTime">- 秒</span></div>
+        </div>
+
+        <div class="question-box" id="questionText">問題文がここに表示されます。</div>
+
+        <!-- 【通常・決算用】仕訳入力エリア -->
+        <div class="input-grid" id="journalInputArea">
+            <!-- 借方 -->
+            <div class="input-group">
+                <h3>【借方】（左側）</h3>
+                <div id="drRow1" class="row-container">
+                    <div class="row-title">1行目</div><select id="selDrSubject1"></select><input type="text" id="numDrAmount1" placeholder="金額" inputmode="numeric" oninput="formatAmountInput(this)">
+                </div>
+                <div id="drRow2" class="row-container">
+                    <div class="row-title">2行目</div><select id="selDrSubject2"></select><input type="text" id="numDrAmount2" placeholder="金額" inputmode="numeric" oninput="formatAmountInput(this)">
+                </div>
+                <div id="drRow3" class="row-container">
+                    <div class="row-title">3行目</div><select id="selDrSubject3"></select><input type="text" id="numDrAmount3" placeholder="金額" inputmode="numeric" oninput="formatAmountInput(this)">
+                </div>
+            </div>
+            <!-- 貸方 -->
+            <div class="input-group">
+                <h3>【貸方】（右側）</h3>
+                <div id="crRow1" class="row-container">
+                    <div class="row-title">1行目</div><select id="selCrSubject1"></select><input type="text" id="numCrAmount1" placeholder="金額" inputmode="numeric" oninput="formatAmountInput(this)">
+                </div>
+                <div id="crRow2" class="row-container">
+                    <div class="row-title">2行目</div><select id="selCrSubject2"></select><input type="text" id="numCrAmount2" placeholder="金額" inputmode="numeric" oninput="formatAmountInput(this)">
+                </div>
+                <div id="crRow3" class="row-container">
+                    <div class="row-title">3行目</div><select id="selCrSubject3"></select><input type="text" id="numCrAmount3" placeholder="金額" inputmode="numeric" oninput="formatAmountInput(this)">
+                </div>
+            </div>
+        </div>
+
+        <!-- 【帳簿クイズ専用】選択エリア -->
+        <div class="book-input-area hidden" id="bookInputArea">
+            <h3>選択肢から正しい答えを選んでください</h3>
+            <div class="row-title" id="lblAnsTitle1">解答欄 1</div>
+            <select id="selBookAns1"></select>
+            <div class="row-title" id="lblAnsTitle2">解答欄 2</div>
+            <select id="selBookAns2"></select>
+            <div class="row-title" id="lblAnsTitle3">解答欄 3</div>
+            <select id="selBookAns3"></select>
+        </div>
+
+        <button class="btn btn-start" onclick="checkAnswer()">結果を記録して次へ</button>
+        <button class="btn btn-action" onclick="nextQuestion(true)">問題をパス（次の問題へ）</button>
+
+        <div class="controls">
+            <button class="btn" style="font-size:14px; padding:6px 15px;" onclick="goToTitle()">タイトルに戻る</button>
+            <button class="btn btn-end" style="font-size:14px; padding:6px 15px;" onclick="finishAndShowReview()">解答を終了してレビューを見る</button>
+        </div>
+    </div>
+
+    <!-- レビュー画面 -->
+    <div id="reviewScreen" class="screen hidden">
+        <h1 style="color: var(--accent-blue);">📊 特訓結果レビュー</h1>
+        <div class="status-panel" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="status-item" style="text-align:center;">挑戦数<br><span id="revTotal" style="font-size:18px;">0</span></div>
+            <div class="status-item" style="text-align:center;">正解数<br><span id="revCorrect" style="font-size:18px; color:var(--accent-green);">0</span></div>
+            <div class="status-item" style="text-align:center;">正解率<br><span id="revRate" style="font-size:18px; color:var(--accent-yellow);">0%</span></div>
+        </div>
+        
+        <div class="review-container" id="reviewListContainer"></div>
+        <button class="btn btn-start" onclick="backToTitleFromReview()">タイトルに戻る</button>
+    </div>
+
+    <script>
+        // 通常仕訳データ (1〜50問)
+        const normalQuestions = [
+            { id: 1, text: "新しくビジネスを開始するにあたり、元手として現金¥100,000を出資し、当社の当座預金口座に預け入れた。", dr: [{sub:"当座預金", amt:100000}], cr: [{sub:"資本金", amt:100000}], exp: "出資（開業）にともなう資産の増加（当座預金）と、純資産の増加（資本金）の仕訳です。" },
+            { id: 2, text: "商品¥50,000を売り上げ、代金は掛けとした。", dr: [{sub:"売掛金", amt:50000}], cr: [{sub:"売上", amt:50000}], exp: "後で代金を受け取る権利（資産）として「売掛金」を計上します。" },
+            { id: 3, text: "A店から商品¥30,000を仕入れ、代金は掛けとした。", dr: [{sub:"仕入", amt:30000}], cr: [{sub:"買掛金", amt:30000}], exp: "後で代金を支払う義務（負債）として「買掛金」を計上します。" },
+            { id: 4, text: "売掛金¥50,000が普通預金口座に振り込まれた。", dr: [{sub:"普通預金", amt:50000}], cr: [{sub:"売掛金", amt:50000}], exp: "普通預金が増加し、回収が完了したため売掛金（資産）が減少します。" },
+            { id: 5, text: "買掛金¥30,000を当座預金口座から支払った。", dr: [{sub:"買掛金", amt:30000}], cr: [{sub:"当座預金", amt:30000}], exp: "義務の消滅（負債の減少）として借方に買掛金を記入します。" },
+            { id: 6, text: "手許の現金を確認したところ、帳簿残高より¥5,000多かった。原因は不明。", dr: [{sub:"現金", amt:5000}], cr: [{sub:"現金過不足", amt:5000}], exp: "実際の現金に帳簿を合わせるため現金を増やし、一時的に「現金過不足」で処理します。" },
+            { id: 7, text: "現金過不足のうち¥3,000は、通信費の記入漏れと判明した。", dr: [{sub:"通信費", amt:3000}], cr: [{sub:"現金過不足", amt:3000}], exp: "過不足の原因が分かったため、現金過不足を相殺し、正しい費用を計上します。" },
+            { id: 8, text: "商品¥40,000を売り上げ、代金は注文時に受け取っていた手付金を充当した。", dr: [{sub:"前受金", amt:40000}], cr: [{sub:"売上", amt:40000}], exp: "事前に預かっていた義務（負債の「前受金」）を売上に振り替えます。" },
+            { id: 9, text: "商品¥60,000を仕入れるため、内金¥10,000を当座預金から支払った。", dr: [{sub:"前払金", amt:10000}], cr: [{sub:"当座預金", amt:10000}], exp: "注文時の手付金は、後で商品を受け取る権利（資産の「前払金」）となります。" },
+            { id: 10, text: "従業員の給料¥180,000から所得税の源泉徴収分¥10,000を差し引き、残額を現金で支給した。", dr: [{sub:"給料", amt:180000}], cr: [{sub:"預り金", amt:10000},{sub:"現金", amt:170000}], exp: "天引きした税金は負債の「預り金」で処理します。" },
+            { id: 11, text: "従業員が負担すべき社会保険料¥8,000を、普通預金から支払った。", dr: [{sub:"預り金", amt:8000}], cr: [{sub:"普通預金", amt:8000}], exp: "一時的に預かっていたお金（負債の「預り金」）の返済・納付です。" },
+            { id: 12, text: "出張する社員に、旅費の概算額¥20,000を現金で手渡した。", dr: [{sub:"仮払金", amt:20000}], cr: [{sub:"現金", amt:20000}], exp: "金額が未確定の概算支給は、一時的な資産として「仮払金」とします。" },
+            { id: 13, text: "出張から戻った社員の旅費精算を行い、実際の旅費¥18,000を差し引いた残額¥2,000を現金で回収した。", dr: [{sub:"旅費交通費", amt:18000},{sub:"現金", amt:2000}], cr: [{sub:"仮払金", amt:20000}], exp: "仮払金を取り消し、確定した費用と戻った現金を借方に計上します。" },
+            { id: 14, text: "パソコン¥120,000を購入し、代金は来月末に支払うこととした。", dr: [{sub:"備品", amt:120000}], cr: [{sub:"未払金", amt:120000}], exp: "商品以外の物品購入に伴う未払代金は「未払金」を使用します。" },
+            { id: 15, text: "不要になった古い事務机を¥5,000で売却し、代金は来月受け取ることにした（※帳簿価格と同額とする）。", dr: [{sub:"未収金", amt:5000}], cr: [{sub:"備品", amt:5000}], exp: "商品以外の物品を売却した未収代金は「未収金」を使います。" },
+            { id: 16, text: "得意先へ送る商品の発送費¥2,000を現金で支払った（当店負担）。", dr: [{sub:"支払発送費", amt:2000}], cr: [{sub:"現金", amt:2000}], exp: "売主負担の発送運賃は、費用の「支払発送費」となります。" },
+            { id: 17, text: "店舗の電気代¥8,500が普通預金口座から引き落とされた。", dr: [{sub:"水道光熱費", amt:8500}], cr: [{sub:"普通預金", amt:8500}], exp: "電気・ガス・水道代は費用の「水道光熱費」として処理します。" },
+            { id: 18, text: "得意先から受け取っていた約束手形¥60,000が満期となり、当座預金に入金された。", dr: [{sub:"当座預金", amt:60000}], cr: [{sub:"受取手形", amt:60000}], exp: "手形債権が回収されたため、受取手形（資産）を減少させます。" },
+            { id: 19, text: "仕入先へ代金支払のため、約束手形¥45,000を振り出した。", dr: [{sub:"買掛金", amt:45000}], cr: [{sub:"支払手形", amt:45000}], exp: "手形を振り出して買掛金を決済したため、新たに「支払手形」（負債）が増加します。" },
+            { id: 20, text: "金融機関から現金¥200,000を借り入れた。", dr: [{sub:"現金", amt:200000}], cr: [{sub:"借入金", amt:200000}], exp: "借入という返済義務が発生するため、貸方は負債の「借入金」です。" },
+            { id: 21, text: "A店に対する売掛金¥25,000が貸し倒れた。なお、貸倒引当金残高は¥30,000である。", dr: [{sub:"貸倒引当金", amt:25000}], cr: [{sub:"売掛金", amt:25000}], exp: "十分な引当金残高があるため、貸倒引当金を取り崩して売掛金と相殺します。" },
+            { id: 22, text: "税務署に確定申告を行い、未払消費税¥50,000を普通預金から納付した。", dr: [{sub:"未払消費税", amt:50000}], cr: [{sub:"普通預金", amt:50000}], exp: "前期末に確定していた「未払消費税」（負債）の支払・減少です。" },
+            { id: 23, text: "商品¥35,000を売り上げ、代金はクレジットカード決済とした（信販会社の手数料は考慮しない）。", dr: [{sub:"クレジット売掛金", amt:35000}], cr: [{sub:"売上", amt:35000}], exp: "信販会社を介した決済の売上は「クレジット売掛金」で区別します。" },
+            { id: 24, text: "銀行から借入金¥200,000を利息¥3,000とともに当座預金から返済した。", dr: [{sub:"借入金", amt:200000},{sub:"支払利息", amt:3000}], cr: [{sub:"当座預金", amt:203000}], exp: "元本の返済（負債の減少）と利息の支払い（費用の発生）です。" },
+            { id: 25, text: "収入印紙¥4,000を現金で購入し、直ちに使用した。", dr: [{sub:"租税公課", amt:4000}], cr: [{sub:"現金", amt:4000}], exp: "収入印紙や税金の支払いは、費用の「租税公課」勘定になります。" },
+            { id: 26, text: "取引先への贈答品代¥8,000を現金で支払った。", dr: [{sub:"交際費", amt:8000}], cr: [{sub:"現金", amt:8000}], exp: "得意先との関係を円滑にするコストは費用の「交際費」です。" },
+            { id: 28, text: "会計ソフトの月額利用料¥5,000が普通預金から引き落とされた。", dr: [{sub:"通信費", amt:5000}], cr: [{sub:"普通預金", amt:5000}], exp: "ネットやクラウド利用料、電話代などは費用の「通信費」です。" },
+            { id: 29, text: "火災保険料の1年分¥24,000を現金で支払った。", dr: [{sub:"保険料", amt:24000}], cr: [{sub:"現金", amt:24000}], exp: "支払時はまず一旦、全額を費用の「保険料」として処理します。" },
+            { id: 30, text: "文房具などの消耗品¥3,000を現金で購入し、費用として処理した。", dr: [{sub:"消耗品費", amt:3000}], cr: [{sub:"現金", amt:3000}], exp: "購入時に費用処理する指定のため、借方は「消耗品費」となります。" },
+            { id: 31, text: "商品¥70,000を仕入れ、代金は以前受け取っていた他店振出の小切手で支払った。", dr: [{sub:"仕入", amt:70000}], cr: [{sub:"現金", amt:70000}], exp: "他店振出小切手は手許で「現金」扱いされているため、貸方は「現金」です。" },
+            { id: 32, text: "A店に現金¥50,000を貸し付け、同店振出の約束手形（手形貸付金）を受け取った。", dr: [{sub:"手形貸付金", amt:50000}], cr: [{sub:"現金", amt:50000}], exp: "手形を伴うお金の貸付けは、資産の「手形貸付金」とします。" },
+            { id: 33, text: "B店から¥30,000を借り入れ、同店宛てに約束手形（手形借入金）を振り出した。", dr: [{sub:"現金", amt:30000}], cr: [{sub:"手形借入金", amt:30000}], exp: "手形を伴うお金の借り入れは、負債の「手形借入金」勘定を用います。" },
+            { id: 34, text: "郵便切手¥2,000を現金で購入し、直ちに使用した。", dr: [{sub:"通信費", amt:2000}], cr: [{sub:"現金", amt:2000}], exp: "郵便切手を即時使用した場合は、通信に要した費用として「通信費」となります。" },
+            { id: 35, text: "広告宣伝のためのチラシ印刷代¥18,000を現金で支払った。", dr: [{sub:"広告宣伝費", amt:18000}], cr: [{sub:"現金", amt:18000}], exp: "チラシや広告にかかるコストは費用の「広告宣伝費」です。" },
+            { id: 36, text: "商品¥80,000を売り上げ、代金のうち¥30,000は現金で受け取り、残額は掛けとした。", dr: [{sub:"現金", amt:30000},{sub:"売掛金", amt:50000}], cr: [{sub:"売上", amt:80000}], exp: "借方に回収方法別の2つの資産科目を並べて記載する複合仕訳です。" },
+            { id: 37, text: "商品¥60,000を仕入れ、代金のうち¥20,000は現金で支払い、残額は掛けとした。", dr: [{sub:"仕入", amt:60000}], cr: [{sub:"現金", amt:20000},{sub:"買掛金", amt:40000}], exp: "貸方に支払手段別の2つの科目を配分して記入する複合仕訳です。" },
+            { id: 38, text: "不要になった備品（取得原価¥200,000、当期首の備品減価償却累計額¥150,000）を¥50,000で売却し、代金は現金で受け取った。", dr: [{sub:"現金", amt:50000},{sub:"備品減価償却累計額", amt:150000}], cr: [{sub:"備品", amt:200000}], exp: "間接法で記録されている資産（備品）の売却です。累計額を借方に配置して相殺消去します。" },
+            { id: 39, text: "当座預金口座を開設し、現金¥500,000を預け入れた。", dr: [{sub:"当座預金", amt:500000}], cr: [{sub:"現金", amt:500000}], exp: "手元の現金が減少し、銀行の「当座預金」という資産が増加します。" },
+            { id: 40, text: "事務所を借り入れ、権利金（礼金）¥50,000を現金で支払った。", dr: [{sub:"支払手数料", amt:50000}], cr: [{sub:"現金", amt:50000}], exp: "返還されない礼金等は、費用の「支払手数料」等で処理をします。" },
+            { id: 41, text: "株式会社を設立し、株式を発行して出資額¥1,000,000を当座預金とした。", dr: [{sub:"当座預金", amt:1000000}], cr: [{sub:"資本金", amt:1000000}], exp: "株主からの資金の払込みは、純資産の「資本金」の増加になります。" },
+            { id: 42, text: "買掛金¥80,000の支払いのために、かねて得意先より受け取っていた他店振出の約束手形を裏書譲渡した。", dr: [{sub:"買掛金", amt:80000}], cr: [{sub:"受取手形", amt:80000}], exp: "手持ちの手形を譲り渡したため、受取手形（資産）の減少となります。" },
+            { id: 43, text: "上記のクレジットカード売掛金¥35,000が、普通預金口座に入金された。", dr: [{sub:"普通預金", amt:35000}], cr: [{sub:"クレジット売掛金", amt:35000}], exp: "クレジット売掛金という未回収の権利が実際の口座入金によって回収・消滅します。" },
+            { id: 44, text: "商品¥30,000を仕入れるため、注文書とともに手付金¥5,000を現金で支払った。", dr: [{sub:"前払金", amt:5000}], cr: [{sub:"現金", amt:5000}], exp: "商品の引き渡しを請求できる資産の「前払金」です。" },
+            { id: 45, text: "商品¥30,000が到着し、事前に支払っていた手付金¥5,000を差し引いた残額は掛けとした。", dr: [{sub:"仕入", amt:30000}], cr: [{sub:"前払金", amt:5000},{sub:"買掛金", amt:25000}], exp: "商品引き渡しの完了にともない「前払金」を取り崩し、残りを「買掛金」とします。" },
+            { id: 46, text: "店舗の固定資産税の第1期分¥20,000を現金で納付した。", dr: [{sub:"租税公課", amt:20000}], cr: [{sub:"現金", amt:20000}], exp: "固定資産税は公的な税金コストなので、費用の「租税公課」です。" },
+            { id: 47, text: "営業用トラックのガソリン代¥6,000を現金で支払った。", dr: [{sub:"車両費", amt:6000}], cr: [{sub:"現金", amt:6000}], exp: "車両にかかるガソリン代や維持費は費用の「車両費」になります。" },
+            { id: 48, text: "求人サイトへの広告掲載料¥25,000を、普通預金から振り込んだ。", dr: [{sub:"広告宣伝費", amt:25000}], cr: [{sub:"普通預金", amt:25000}], exp: "求人の掲載コストは、広告を目的とした費用「広告宣伝費」です。" },
+            { id: 49, text: "事務所の家賃2ヶ月分¥40,000を現金で前払いした。", dr: [{sub:"前払家賃", amt:40000}], cr: [{sub:"現金", amt:40000}], exp: "期中における家賃の前払いは、資産の「前払家賃」とします。" },
+            { id: 50, text: "店頭で使用する文房具やコピー用紙¥2,000を現金で購入し、直ちに使用した。", dr: [{sub:"消耗品費", amt:2000}], cr: [{sub:"現金", amt:2000}], exp: "文房具などを即時消費したため、費用の発生「消耗品費」とします。" }
+        ];
+
+        // 決算整理・手続仕訳データ (51〜80問) 【3級最新対応】
+        const settlementQuestions = [
+            { id: 51, text: "【決算整理】期首商品棚卸高は¥40,000である。仕入勘定の行で売上原価を計算するため、期首商品を振り替える。", dr: [{sub:"仕入", amt:40000}], cr: [{sub:"繰越商品", amt:40000}], exp: "決算整理仕訳の「しー・くり」です。期首商品棚卸高を「仕入」勘定へ振り替えます。" },
+            { id: 52, text: "【決算整理】期末商品棚卸高は¥55,000である。仕入勘定から期末商品棚卸高を繰越商品勘定に振り替える。", dr: [{sub:"繰越商品", amt:55000}], cr: [{sub:"仕入", amt:55000}], exp: "決算整理仕訳の「くり・しー」です。売れ残った商品を次期へ繰り越すため「繰越商品」にします。" },
+            { id: 53, text: "【決算整理】期末の売掛金残高¥300,000に対して、1%の貸倒引当金を差額補充法で設定する。なお、現在の貸倒引当金残高は¥1,200である。", dr: [{sub:"貸倒引当金繰入", amt:1800}], cr: [{sub:"貸倒引当金", amt:1800}], exp: "目標額は3,000円。現在残高1,200円を引いた差額の1,800円を「貸倒引当金繰入」で補充します。" },
+            { id: 54, text: "【決算整理】建物（取得原価¥2,000,000、残存価格ゼロ、耐用年数20年）について、定額法により当期の減価償却費を計上する（間接法）。", dr: [{sub:"減価償却費", amt:100000}], cr: [{sub:"建物減価償却累計額", amt:100000}], exp: "2,000,000 ÷ 20年 = 100,000円。貸方は「建物減価償却累計額」を使用します。" },
+            { id: 55, text: "【決算整理】当期中に支払った保険料のうち、翌期に属する未経過分（前払額）が¥8,000あるため、これを繰り延べる。", dr: [{sub:"前払保険料", amt:8000}], cr: [{sub:"保険料", amt:8000}], exp: "次期の分を当期の費用からマイナスし、資産の「前払保険料」へ振り替えます。" },
+            { id: 56, text: "【決算整理】当期に属する店舗家賃の未払額が¥20,000あるため、これを計上する。", dr: [{sub:"支払家賃", amt:20000}], cr: [{sub:"未払家賃", amt:20000}], exp: "発生しているが未払いの家賃を、当期の費用（借方）とし、貸方に負債の「未払家賃」を計上します。" },
+            { id: 57, text: "【決算整理】貸付金に対する受取利息の未収額が¥3,500あるため、これを計上する。", dr: [{sub:"未収利息", amt:3500}], cr: [{sub:"受取利息", amt:3500}], exp: "当期に属する未受けの利息を収益（貸方）とし、相手勘定を資産の「未収利息」とします。" },
+            { id: 58, text: "【決算整理】当期に受け取った手数料のうち、翌期分に属する前受額が¥5,000あるため、当期の収益から繰り延べる。", dr: [{sub:"受取手数料", amt:5000}], cr: [{sub:"前受手数料", amt:5000}], exp: "翌期分の収益を当期から差し引くため借方「受取手数料」、貸方を負債の「前受手数料」とします。" },
+            { id: 59, text: "【決算整理】期中に消耗品費（費用）として処理していた文房具（消耗品）のうち、期末の未使用残高が¥2,000あったため、資産（消耗品）に振り替える。", dr: [{sub:"消耗品", amt:2000}], cr: [{sub:"消耗品費", amt:2000}], exp: "使わなかった文房具を資産の「消耗品」に振り替え、その分「消耗品費」を減少させます。" },
+            { id: 60, text: "【決算整理】期中に発生した現金過不足の不足額（借方残高）¥1,500について、決算日まで原因が判明しなかったため、適切な勘定へ振り替える。", dr: [{sub:"雑損", amt:1500}], cr: [{sub:"現金過不足", amt:1500}], exp: "原因不明の現金不足（借方残高）は、営業外の損失である「雑損」に振り替えます。" },
+            { id: 61, text: "【決算整理】期中に発生した現金過不足の過剰額（貸方残高）¥3,000について、決算日まで原因が判明しなかったため、適切な勘定へ振り替える。", dr: [{sub:"現金過不足", amt:3000}], cr: [{sub:"雑益", amt:3000}], exp: "原因不明の現金過剰（貸方残高）は、営業外の利益である「雑益」に振り替えます。" },
+            { id: 62, text: "【決算整理】決算日において、当座預金勘定の帳簿残高がマイナス¥12,000となっているため、適切な負債の勘定に振り替える。", dr: [{sub:"当座預金", amt:12000}], cr: [{sub:"当座借越", amt:12000}], exp: "当座預金のマイナスを決算書上正しく報告するため、貸方に負債の「当座借越」を計上します。" },
+            { id: 63, text: "【決算手続】決算にあたり、当期の確定消費税額を計算した。仮受消費税¥150,000、仮払消費税¥90,000の差額を未払消費税として計上する。", dr: [{sub:"仮受消費税", amt:150000}], cr: [{sub:"仮払消費税", amt:90000},{sub:"未払消費税", amt:60000}], exp: "仮受消費税と仮払消費税を相殺し、未払分を「未払消費税」として確定させます。" },
+            { id: 64, text: "【決算手続】各収益・費用勘定を締め切るため、収益勘定の合計（売上等総額）¥800,000を「損益」勘定へ振り替える（収益の損益振替）。", dr: [{sub:"売上", amt:800000}], cr: [{sub:"損益", amt:800000}], exp: "収益勘定を全て借方に配置して残高を0にし、集計用勘定である「損益」の貸方へ集約します。" },
+            { id: 65, text: "【決算手続】「損益」勘定で集計した結果、貸方（収益）が借方（費用）を上回り、当期純利益¥250,000が算出された。これを純資産の勘定に振り替える（資本の振替）。", dr: [{sub:"損益", amt:250000}], cr: [{sub:"繰越利益剰余金", amt:250000}], exp: "純利益を損益の借方に記入して締め切り、貸方「繰越利益剰余金」へ振り替えます。" },
+            { id: 66, text: "【期首再振替】期首にあたり、前期末に繰り延べた前払保険料¥8,000を、当期の費用口座へ戻すための再振替仕訳を行う。", dr: [{sub:"保険料", amt:8000}], cr: [{sub:"前払保険料", amt:8000}], exp: "前期末に資産計上した「前払保険料」を取り消し、元の費用である「保険料」に戻します。" },
+            { id: 67, text: "【期首再振替】期首にあたり、前期末に見越して計上した未払家賃¥20,000を、費用口座へ戻すための再振替仕訳を行う。", dr: [{sub:"未払家賃", amt:20000}], cr: [{sub:"支払家賃", amt:20000}], exp: "前期末に負債計上した「未払家賃」を取り消し、相手科目を「支払家賃」とします。" },
+            { id: 68, text: "【決算整理】期末の売掛金残高¥500,000に対して差額補充法で2%の貸倒引当金を設定する。なお、現在の貸倒引当金残高は¥13,000である。", dr: [{sub:"貸倒引当金", amt:3000}], cr: [{sub:"貸倒引当金戻入", amt:3000}], exp: "設定目標は10,000円。残高が3,000円余っているため、貸倒引当金を減らして貸方に「貸倒引当金戻入」（収益）を計上します。" },
+            { id: 69, text: "【決算整理】営業用トラック（取得原価¥900,000、残存価格ゼロ、耐用年数5年）について、定額法により当期の減価償却費を計上する（間接法）。", dr: [{sub:"減価償却費", amt:180000}], cr: [{sub:"車両運搬具減価償却累計額", amt:180000}], exp: "900,000 ÷ 5年 = 180,000円。貸方は「車両運搬具減価償却累計額」となります。" },
+            { id: 70, text: "【決算整理】期中に消耗品（資産）として処理していた文房具類総額¥6,000のうち、期末における「当期消費額」が¥4,500と判明した。費用（消耗品費）への振替処理を行う。", dr: [{sub:"消耗品費", amt:4500}], cr: [{sub:"消耗品", amt:4500}], exp: "購入時に資産処理しているため、決算時には「使った分」だけを費用の「消耗品費」に振り替えます。" },
+            { id: 71, text: "【決算整理】向こう1年分の受取家賃¥120,000を当期中に受け取り、全額「受取家賃」（収益）としていたが、期末調査により次期分（未経過）が¥30,000あると判明したため繰り延べる。", dr: [{sub:"受取家賃", amt:30000}], cr: [{sub:"前受家賃", amt:30000}], exp: "次期の収益分を当期からマイナスするため借方「受取家賃」、貸方は負債の「前受家賃」とします。" },
+            { id: 72, text: "【決算整理】定期預金の利息について、当期に属する未受けの利息が¥1,200あることが判明したため、見越し計上を行う。", dr: [{sub:"未収利息", amt:1200}], cr: [{sub:"受取利息", amt:1200}], exp: "当期の収益に含めるべき未収入の利息なので、貸方「受取利息」、借方は資産の「未収利息」にします。" },
+            { id: 73, text: "【決算整理】当期に支払った家賃（支払家賃）のうち、翌期分の前払額が¥15,000あるため、当期の費用から除外して次期へ繰り延べる。", dr: [{sub:"前払家賃", amt:15000}], cr: [{sub:"支払家賃", amt:15000}], exp: "前払いした家賃を資産の「前払家賃」へ振り替え、貸方で「支払家賃」を減少させます。" },
+            { id: 74, text: "【決算整理】借入金（年利3%）に対する当期分の支払利息について、未払額が¥6,000あるため計上する。", dr: [{sub:"支払利息", amt:6000}], cr: [{sub:"未払利息", amt:6000}], exp: "当期に発生しているが未払いの利息を、費用の発生（借方）および負債の計上（貸方）として処理します。" },
+            { id: 75, text: "【決算整理】当期の当期純利益に対する法人税、住民税及び事業税の概算額¥45,000を計上し、未払いとした（※中間納付なし）。", dr: [{sub:"法人税等", amt:45000}], cr: [{sub:"未払法人税等", amt:45000}], exp: "決算において当期の確定税額を「法人税等」（費用）として計上し、貸方に「未払法人税等」（負債）を計上します。" },
+            { id: 76, text: "【決算整理】期首商品棚卸高は¥20,000である。売上原価の計算（仕入の行）を行うため、期首商品を仕入勘定へ振り替える。", dr: [{sub:"仕入", amt:20000}], cr: [{sub:"繰越商品", amt:20000}], exp: "売上原価算出の「しー・くり」です。期首商品を「仕入」勘定（費用）にまとめます。" },
+            { id: 77, text: "【決算整理】借入金に対する当期分の支払利息について、まだ支払っていない未払分が¥2,500あることが判明したため計上する。", dr: [{sub:"支払利息", amt:2500}], cr: [{sub:"未払利息", amt:2500}], exp: "当期に属する未払いの利息を、費用の「支払利息」および負債の「未払利息」として計上します。" },
+            { id: 78, text: "【決算整理】当期の途中で、当座預金の勘定残高がマイナスとなり銀行と「当座借越契約」に基づく借り入れ状態（¥25,000）になった。決算につき、これを適切な負債の勘定へ振り替える。", dr: [{sub:"当座預金", amt:25000}], cr: [{sub:"当座借越", amt:25000}], exp: "決算日に当座預金がマイナスの場合は、貸方に負債の「当座借越」を計上して当座預金を0に修正します。" },
+            { id: 79, text: "【決算手続】各費用勘定を締め切るため、費用勘定の合計（仕入や諸費用総額）¥550,000を「損益」勘定へ振り替える（費用の損益振替）。", dr: [{sub:"損益", amt:550000}], cr: [{sub:"仕入", amt:550000}], exp: "諸費用の総額をすべて「損益」勘定の借方に集約し、各費用勘定の残高を0にする手続きです。" },
+            { id: 80, text: "【決算手続】「損益」勘定で集計した結果、借方（費用）が貸方（収益）を上回り、当期純損失¥40,000（赤字）が算出された。これを純資産の勘定に振り替える（資本の振替）。", dr: [{sub:"繰越利益剰余金", amt:40000}], cr: [{sub:"損益", amt:40000}], exp: "当期純損失は、会社の純資産を減らすため借方に「繰越利益剰余金」を配置し、損益勘定を締め切ります。" }
+        ];
+
+        // 主要簿・補助簿・帳簿の知識データ (81〜100問)
+        const bookQuestions = [
+            { id: 81, isBook: true, text: "すべての取引を発生順に仕訳して記録する、簿記上の最も基本的な【主要簿】の名前は何か？", labels: ["主要簿名"], ans: ["仕訳帳"], exp: "仕訳帳は、発生したすべての取引を日付順に仕訳の形で記録する最も基本的な「主要簿」です。" },
+            { id: 82, isBook: true, text: "仕訳帳からすべての取引を勘定（科目）ごとに分類して転記する【主要簿】の名前は何か？", labels: ["主要簿名"], ans: ["総勘定元帳"], exp: "総勘定元帳は、仕訳帳の内容を勘定口座ごとに整理・集計するための不可欠な「主要簿」です。" },
+            { id: 83, isBook: true, text: "商品¥50,000を売り上げ、代金は掛けとした。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["商品有高帳", "売掛金元帳"], exp: "商品の売上げにより「商品有高帳」、掛け取引により得意先ごとの残高を管理する「売掛金元帳（得意先元帳）」に記入されます。" },
+            { id: 84, isBook: true, text: "A店から商品¥30,000を仕入れ、代金は掛けとした。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["商品有高帳", "買掛金元帳"], exp: "商品の仕入れにより「商品有高帳」、掛けでの仕入れにより仕入先別の残高を管理する「買掛金元帳（仕入先元帳）」に記入されます。" },
+            { id: 85, isBook: true, text: "得意先より売掛金¥20,000の回収として、約束手形を受け取った。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["受取手形記入帳", "売掛金元帳"], exp: "約束手形を受け取ったため「受取手形記入帳」、売掛金が減少したため得意先管理の「売掛金元帳」へ記入されます。" },
+            { id: 86, isBook: true, text: "仕入先へ買掛金支払のため、約束手形を振り出した。このとき取引が記入される【補助簿】を「2つ」選択しなさい。", labels: ["補助簿1", "補助簿2"], ans: ["支払手形記入帳", "買掛金元帳"], exp: "手形を振り出したので「支払手形記入帳 Gord」、買掛金が減少したので仕入先管理の「買掛金元帳」へ記入されます。" },
+            { id: 87, isBook: true, text: "店舗の家賃¥15,000を当座預金口座から支払った。このとき記入される【補助簿】の名前は何か？", labels: ["補助簿名"], ans: ["当座預金出納帳"], exp: "当座預金の預け入れや引き出しを細かく記録する補助簿は「当座預金出納帳」です。" },
+            { id: 88, isBook: true, text: "商品の仕入運賃¥3,000を小口現金の係から現金で支払った。このとき記入される【補助簿】の名前は何か？", labels: ["補助簿名"], ans: ["小口現金出納帳"], exp: "小口現金の支払いや補給を細かく記録する補助簿は「小口現金出納帳」です。" },
+            { id: 89, isBook: true, text: "固定資産（建物や備品など）の取得原価や減価償却の履歴を個別に管理するための【補助簿】は何か？", labels: ["補助簿名"], ans: ["固定資産台帳"], exp: "固定資産台帳は、建物・備品・車両などの有形固定資産の状況を個別に詳細管理する補助簿です。" },
+            { id: 90, isBook: true, text: "商品を引き渡し、代金はクレジットカード決済とした。このとき売上帳のほかに記入される【補助簿】は何か？", labels: ["補助簿名"], ans: ["クレジット売掛金元帳"], exp: "クレジットカード決済による債権を個別に管理するため、「クレジット売掛金元帳」へ記入されます。" },
+            { id: 91, isBook: true, text: "現金を受け取って商品を売り上げた。このとき【売上帳】のほかに記入される補助簿は何か？", labels: ["補助簿名"], ans: ["現金出納帳"], exp: "現金の出入りを伴う売上なので、「売上帳」と「現金出納帳」の双方に記入されます。" },
+            { id: 92, isBook: true, text: "【総勘定元帳のルール】売掛金を現金で回収したとき、総勘定元帳の『売掛金』勘定のどちら側に転記されるか？", labels: ["記入側"], ans: ["貸方（右側）"], exp: "売掛金（資産）の減少を意味するため、総勘定元帳の売掛金勘定の「貸方（右側）」へ記入されます。" },
+            { id: 93, isBook: true, text: "【総勘定元帳のルール】買掛金を当座預金から支払ったとき、総勘定元帳の『買掛金』勘定のどちら側に転記されるか？", labels: ["記入側"], ans: ["借方（左側）"], exp: "買掛金（負債）の減少を意味するため、総勘定元帳の買掛金勘定の「借方（左側）」へ記入されます。" },
+            { id: 94, isBook: true, text: "【総勘定元帳のルール】当座預金口座から借入金の利息が引き落とされたとき、総勘定元帳の『支払利息』勘定のどちら側に記入されるか？", labels: ["記入側"], ans: ["借方（左側）"], exp: "費用（支払利息）の発生を意味するため、支払利息勘定の「借方（左側）」へ記入されます。" },
+            { id: 95, isBook: true, text: "【総勘定元帳のルール】店舗を貸して家賃を現金で受け取ったとき、総勘定元帳の『受取家賃』勘定のどちら側に記入されるか？", labels: ["記入側"], ans: ["貸方（右側）"], exp: "収益（受取家賃）の発生を意味するため、受取家賃勘定の「貸方（右側）」へ記入されます。" },
+            { id: 96, isBook: true, text: "【商品有高帳のルール】商品の返品（売上戻り）があったとき、商品有高帳の受入・払出・残高のうち、どこに記録するか？", labels: ["記入場所"], ans: ["払出欄に赤字または▲記入"], exp: "売上返品（売上戻り）は、払出高のマイナスとして「払出欄」に赤字（または▲等の控除記号）で記入するのが原則です。" },
+            { id: 97, isBook: true, text: "【商品有高帳のルール】商品有高帳において、払い出した商品の「払出金額」を計算する際、計算のベースとなる単価はどれか？", labels: ["使用する単価"], ans: ["原価（仕入単価）"], exp: "商品有高帳は商品の「数量と原価」を管理する帳簿です。売価ではなく必ず「原価」で払出を計算します。" },
+            { id: 98, isBook: true, text: "仕入先から仕入れた商品の一部にキズがあったため返品した（仕入戻し）。このとき記入される【補助簿】を「2つ」答えなさい。", labels: ["補助簿1", "補助簿2"], ans: ["仕入帳", "買掛金元帳"], exp: "仕入れの減少を表すため「仕入帳」、買掛金の減少のため「買掛金元帳」へ記入されます。" },
+            { id: 99, isBook: true, text: "決算において、すべての収益・費用の勘定を締め切るために、これらの残高を振り替える集計用の【主要簿（勘定口座）】の名前は何か？", labels: ["集計用勘定名"], ans: ["損益"], exp: "収益・費用の各諸勘定は、決算振替手続きによって「損益勘定」に集約されて締め切られます。" },
+            { id: 100, isBook: true, text: "決算振替手続において、最終的に確定した「当期純利益」は、損益勘定から何という勘定（純資産）へ振り替えられるか？", labels: ["振替先勘定名"], ans: ["繰越利益剰余金"], exp: "損益勘定で集計された当期純利益は、純資産の「繰越利益剰余金勘定」へ振り替えられます。" }
+        ];
+
+        // 超巨大マスター選択肢
+        const masterSubjects = ["現金", "当座預金", "普通預金", "売掛金", "クレジット売掛金", "受取手形", "前払金", "仮払金", "未収家賃", "未収利息", "消耗品", "繰越商品", "備品", "車両運搬具", "手形貸付金", "建物減価償却累計額", "備品減価償却累計額", "車両運搬具減価償却累計額", "仮払消費税", "買掛金", "支払手形", "前受金", "前受家賃", "前受手数料", "預り金", "仮受消費税", "未払消費税", "未払法人税等", "未払利息", "未払家賃", "未払金", "借入金", "手形借入金", "当座借越", "資本金", "繰越利益剰余金", "売上", "受取家賃", "受取利息", "受取手数料", "雑益", "損益", "仕入", "給料", "旅費交通費", "交際費", "広告宣伝費", "消耗品費", "租税公課", "保険料", "支払家賃", "支払発送費", "水道光熱費", "法人税等", "支払手数料", "支払利息", "車両費", "前払保険料", "前払家賃", "貸倒引当金", "貸倒引当金繰入", "貸倒引当金戻入", "減価償却費", "雑損", "なし", "仕訳帳", "総勘定元帳", "現金出納帳", "当座預金出納帳", "小口現金出納帳", "売掛金元帳", "買掛金元帳", "受取手形記入帳", "支払手形記入帳", "売上帳", "仕入帳", "商品有高帳", "固定資産台帳", "クレジット売掛金元帳", "借方（左側）", "貸方（右側）", "払出欄に赤字または▲記入", "原価（仕入単価）", "売価（販売単価）"];
+
+        let currentPool = []; 
+        let currentQuestion = null;
+        let currentIndex = 0; 
+        let isShuffleMode = false; 
+        let exp = 0;
+        let combo = 0;
+        let highScore = 0;
+        let timerOn = false;
+        let startTime = null;
+        let gameHistory = [];
+        let maxQuestions = 30;
+        let selectedMode = "normal";
+
+        window.onload = function() {
+            if(localStorage.getItem("boki_highScore")) highScore = parseInt(localStorage.getItem("boki_highScore"));
+            document.getElementById("lblHighScore").innerText = highScore;
+            toggleModeUI(); 
+        };
+
+        // 金額入力欄の自動カンマ整形処理
+        function formatAmountInput(inputEl) {
+            let rawValue = inputEl.value.replace(/[^0-9]/g, '');
+            if (!rawValue) {
+                inputEl.value = '';
+                return;
+            }
+            let num = parseInt(rawValue, 10);
+            inputEl.value = num.toLocaleString('ja-JP');
+        }
+
+        // カンマ区切り文字列から数値を取り出す関数
+        function getAmountValue(id) {
+            const val = document.getElementById(id).value;
+            const numStr = val.replace(/[^0-9]/g, '');
+            return numStr ? parseInt(numStr, 10) : 0;
+        }
+
+        function toggleModeUI() {
+            const modes = document.getElementsByName("gameMode");
+            for (let m of modes) { if (m.checked) { selectedMode = m.value; break; } }
+            
+            document.getElementById("normalCountOptions").classList.add("hidden");
+            document.getElementById("settlementCountOptions").classList.add("hidden");
+            document.getElementById("booksCountOptions").classList.add("hidden");
+            document.getElementById("randomallCountOptions").classList.add("hidden");
+
+            if(selectedMode === "settlement") {
+                document.getElementById("settlementCountOptions").classList.remove("hidden");
+            } else if(selectedMode === "books") {
+                document.getElementById("booksCountOptions").classList.remove("hidden");
+            } else if(selectedMode === "randomall") {
+                document.getElementById("randomallCountOptions").classList.remove("hidden");
+            } else {
+                document.getElementById("normalCountOptions").classList.remove("hidden");
+            }
+        }
+
+        function startGame() {
+            if(confirm("ゲームを開始しますか？\n（履歴や現在のコンボはリセットされます）")) {
+                toggleModeUI(); 
+
+                if(selectedMode === "settlement") {
+                    currentPool = [...settlementQuestions];
+                    const radios = document.getElementsByName("questionCountSettlement");
+                    for (let r of radios) { if (r.checked) { maxQuestions = parseInt(r.value); break; } }
+                } else if(selectedMode === "books") {
+                    currentPool = [...bookQuestions];
+                    const radios = document.getElementsByName("questionCountBooks");
+                    for (let r of radios) { if (r.checked) { maxQuestions = parseInt(r.value); break; } }
+                } else if(selectedMode === "randomall") {
+                    currentPool = [...normalQuestions, ...settlementQuestions, ...bookQuestions];
+                    for (let i = currentPool.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [currentPool[i], currentPool[j]] = [currentPool[j], currentPool[i]];
+                    }
+                    const radios = document.getElementsByName("questionCountRandomAll");
+                    for (let r of radios) { if (r.checked) { maxQuestions = parseInt(r.value); break; } }
+                } else {
+                    currentPool = [...normalQuestions];
+                    const radios = document.getElementsByName("questionCount");
+                    for (let r of radios) { if (r.checked) { maxQuestions = parseInt(r.value); break; } }
+                }
+
+                combo = 0;
+                currentIndex = 0; 
+                exp = 0;
+                gameHistory = []; 
+                document.getElementById("lblExp").innerText = exp;
+                document.getElementById("lblCombo").innerText = combo;
+                document.getElementById("titleScreen").classList.add("hidden");
+                document.getElementById("reviewScreen").classList.add("hidden");
+                document.getElementById("gameScreen").classList.remove("hidden");
+                nextQuestion(false);
+            }
+        }
+
+        function toggleOrderMode() {
+            isShuffleMode = !isShuffleMode;
+            const btn = document.getElementById("btnOrderToggle");
+            if(isShuffleMode) {
+                btn.innerText = "シャッフル"; btn.style.background = "#e67e22";
+            } else {
+                btn.innerText = "順番通り"; btn.style.background = "#3498db";
+            }
+        }
+
+        function setupSubjectOptions(question) {
+            const MAX_OPTIONS = 6; 
+
+            // 帳簿名や特殊ルール文言など、一般的な問題でダミー選択肢に出したくない項目を除外判定
+            const isBookTerm = (sub) => [
+                "仕訳帳", "総勘定元帳", "現金出納帳", "当座預金出納帳", "小口現金出納帳", 
+                "売掛金元帳", "買掛金元帳", "受取手形記入帳", "支払手形記入帳", "売上帳", 
+                "仕入帳", "商品有高帳", "固定資産台帳", "クレジット売掛金元帳", 
+                "借方（左側）", "貸方（右側）", "払出欄に赤字または▲記入", "原価（仕入単価）", "売価（販売単価）"
+            ].includes(sub);
+
+            if(question.isBook) {
+                document.getElementById("journalInputArea").classList.add("hidden");
+                document.getElementById("bookInputArea").classList.remove("hidden");
+                
+                const selects = [
+                    document.getElementById("selBookAns1"),
+                    document.getElementById("selBookAns2"),
+                    document.getElementById("selBookAns3")
+                ];
+
+                document.getElementById("lblAnsTitle1").innerText = `解答欄 1: 【${question.labels[0]}】`;
+                if(question.labels.length > 1) {
+                    document.getElementById("lblAnsTitle2").innerText = `解答欄 2: 【${question.labels[1]}】`;
+                    document.getElementById("selBookAns2").classList.remove("hidden");
+                } else {
+                    document.getElementById("lblAnsTitle2").innerText = `解答欄 2（※不使用）`;
+                    document.getElementById("selBookAns2").classList.add("hidden");
+                }
+                if(question.labels.length > 2) {
+                    document.getElementById("lblAnsTitle3").innerText = `解答欄 3: 【${question.labels[2]}】`;
+                    document.getElementById("selBookAns3").classList.remove("hidden");
+                } else {
+                    document.getElementById("lblAnsTitle3").innerText = `解答欄 3（※不使用）`;
+                    document.getElementById("selBookAns3").classList.add("hidden");
+                }
+
+                const correctSubs = new Set(question.ans);
+
+                // 問96（または他の特定の指示問題）以外では特殊な文言がダミーに入らないよう除外
+                const pool = [...masterSubjects].filter(sub => !correctSubs.has(sub) && sub !== "なし" && !isBookTerm(sub));
+                for (let i = pool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]];
+                }
+
+                const chosenSubs = Array.from(correctSubs);
+                while (chosenSubs.length < MAX_OPTIONS && pool.length > 0) { chosenSubs.push(pool.pop()); }
+                for (let i = chosenSubs.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1)); [chosenSubs[i], chosenSubs[j]] = [chosenSubs[j], chosenSubs[i]];
+                }
+
+                selects.forEach(sel => {
+                    sel.innerHTML = "";
+                    sel.add(new Option("--- 選択してください ---", ""));
+                    sel.add(new Option("なし", "なし"));
+                    chosenSubs.forEach(sub => { sel.add(new Option(sub, sub)); });
+                });
+
+            } else {
+                document.getElementById("journalInputArea").classList.remove("hidden");
+                document.getElementById("bookInputArea").classList.add("hidden");
+
+                const drLength = question.dr.length;
+                const crLength = question.cr.length;
+
+                document.getElementById("drRow1").style.display = (drLength >= 1) ? "block" : "none";
+                document.getElementById("drRow2").style.display = (drLength >= 2) ? "block" : "none";
+                document.getElementById("drRow3").style.display = (drLength >= 3) ? "block" : "none";
+
+                document.getElementById("crRow1").style.display = (crLength >= 1) ? "block" : "none";
+                document.getElementById("crRow2").style.display = (crLength >= 2) ? "block" : "none";
+                document.getElementById("crRow3").style.display = (crLength >= 3) ? "block" : "none";
+
+                const selects = [
+                    document.getElementById("selDrSubject1"), document.getElementById("selDrSubject2"), document.getElementById("selDrSubject3"),
+                    document.getElementById("selCrSubject1"), document.getElementById("selCrSubject2"), document.getElementById("selCrSubject3")
+                ];
+
+                const correctSubs = new Set();
+                question.dr.forEach(d => correctSubs.add(d.sub));
+                question.cr.forEach(c => correctSubs.add(c.sub));
+
+                const pool = [...masterSubjects].filter(sub => !correctSubs.has(sub) && sub !== "なし" && !isBookTerm(sub));
+                for (let i = pool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]];
+                }
+
+                const chosenSubs = Array.from(correctSubs);
+                while (chosenSubs.length < MAX_OPTIONS && pool.length > 0) { chosenSubs.push(pool.pop()); }
+                for (let i = chosenSubs.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1)); [chosenSubs[i], chosenSubs[j]] = [chosenSubs[j], chosenSubs[i]];
+                }
+
+                selects.forEach(sel => {
+                    sel.innerHTML = "";
+                    sel.add(new Option("--- 科目を選択 ---", ""));
+                    sel.add(new Option("なし", "なし"));
+                    chosenSubs.forEach(sub => { if(sub !== "なし") sel.add(new Option(sub, sub)); });
+                });
+            }
+        }
+
+        function nextQuestion(isPass = false) {
+            if(isPass && currentQuestion) {
+                gameHistory.push({
+                    question: currentQuestion, userDr: [{sub:"（パス）", amt:0}], userCr: [{sub:"（パス）", amt:0}], isCorrect: false
+                });
+                if(!isShuffleMode) currentIndex++;
+            }
+
+            if (gameHistory.length >= maxQuestions) {
+                alert(`設定された出題数（${maxQuestions}問）に達しました！レビュー画面へ進みます。`);
+                finishAndShowReview(); return;
+            }
+
+            if (isShuffleMode) {
+                const idx = Math.floor(Math.random() * currentPool.length);
+                currentQuestion = currentPool[idx];
+            } else {
+                if (currentIndex >= currentPool.length) {
+                    alert("特訓問題プールのすべての問題を解き終えました。レビュー画面へ進みます。");
+                    finishAndShowReview(); return;
+                }
+                currentQuestion = currentPool[currentIndex];
+            }
+
+            const currentNumber = gameHistory.length + 1;
+            
+            let typeBadge = "通常仕訳";
+            if(currentQuestion.isBook) typeBadge = "主要簿・補助簿";
+            else if(currentQuestion.id >= 51) typeBadge = "決算整理";
+
+            document.getElementById("questionText").innerText = `【${currentNumber}問目 / 全${maxQuestions}問】[${typeBadge}] 問 ${currentQuestion.id}：${currentQuestion.text}`;
+            setupSubjectOptions(currentQuestion);
+
+            document.getElementById("numDrAmount1").value = "";
+            document.getElementById("numDrAmount2").value = "";
+            document.getElementById("numDrAmount3").value = "";
+            document.getElementById("numCrAmount1").value = "";
+            document.getElementById("numCrAmount2").value = "";
+            document.getElementById("numCrAmount3").value = "";
+            document.getElementById("selBookAns1").value = "";
+            document.getElementById("selBookAns2").value = "";
+            document.getElementById("selBookAns3").value = "";
+
+            if(timerOn) { startTime = new Date(); } else { document.getElementById("lblTime").innerText = "- 秒"; }
+        }
+
+        function compareEntries(userEntries, correctEntries) {
+            const filteredUser = userEntries.filter(e => {
+                if(e.sub === "なし" && e.amt === 0) return true;
+                return (e.sub !== "" && e.sub !== "なし" && e.amt > 0);
+            }).map(e => ({ sub: e.sub === "" ? "なし" : e.sub, amt: e.amt }));
+
+            const filteredCorrect = correctEntries.map(e => ({ sub: e.sub, amt: e.amt }));
+            if (filteredUser.length !== filteredCorrect.length) return false;
+
+            const sorter = (a, b) => a.sub.localeCompare(b.sub) || (a.amt - b.amt);
+            filteredUser.sort(sorter); filteredCorrect.sort(sorter);
+
+            for (let i = 0; i < filteredUser.length; i++) {
+                if (filteredUser[i].sub !== filteredCorrect[i].sub || filteredUser[i].amt !== filteredCorrect[i].amt) return false;
+            }
+            return true;
+        }
+
+        function checkAnswer() {
+            let isCorrect = false;
+            let userDrFormatted = [];
+            let userCrFormatted = [];
+
+            if(currentQuestion.isBook) {
+                const u1 = document.getElementById("selBookAns1").value;
+                const u2 = document.getElementById("selBookAns2").value;
+                const u3 = document.getElementById("selBookAns3").value;
+                
+                const userAnsList = [u1, u2, u3].filter(x => x !== "" && x !== "なし");
+                const correctAnsList = [...currentQuestion.ans];
+
+                userAnsList.sort(); correctAnsList.sort();
+                isCorrect = (userAnsList.length === correctAnsList.length) && userAnsList.every((val, i) => val === correctAnsList[i]);
+                
+                userDrFormatted = [{sub: userAnsList.join(" , ") || "なし", amt: 0}];
+                userCrFormatted = [{sub: "-", amt: 0}];
+            } else {
+                const userDr = [
+                    { sub: document.getElementById("selDrSubject1").value, amt: getAmountValue("numDrAmount1") },
+                    { sub: document.getElementById("selDrSubject2").value, amt: getAmountValue("numDrAmount2") },
+                    { sub: document.getElementById("selDrSubject3").value, amt: getAmountValue("numDrAmount3") }
+                ];
+                const userCr = [
+                    { sub: document.getElementById("selCrSubject1").value, amt: getAmountValue("numCrAmount1") },
+                    { sub: document.getElementById("selCrSubject2").value, amt: getAmountValue("numCrAmount2") },
+                    { sub: document.getElementById("selCrSubject3").value, amt: getAmountValue("numCrAmount3") }
+                ];
+
+                const drCorrect = compareEntries(userDr, currentQuestion.dr);
+                const crCorrect = compareEntries(userCr, currentQuestion.cr);
+                isCorrect = drCorrect && crCorrect;
+
+                const filterEmpty = (arr) => {
+                    const f = arr.filter(e => e.sub !== "" && e.sub !== "なし");
+                    return f.length === 0 ? [{sub:"なし", amt:0}] : f;
+                };
+                userDrFormatted = filterEmpty(userDr);
+                userCrFormatted = filterEmpty(userCr);
+            }
+
+            gameHistory.push({
+                question: currentQuestion, userDr: userDrFormatted, userCr: userCrFormatted, isCorrect: isCorrect
+            });
+
+            let timeMsg = "";
+            if(timerOn && startTime) {
+                const clearTime = Math.round((new Date() - startTime) / 1000);
+                document.getElementById("lblTime").innerText = `${clearTime} 秒`;
+                timeMsg = `\n⏱クリアタイム: ${clearTime}秒`;
+            }
+
+            if(isCorrect) {
+                exp++; combo++;
+                document.getElementById("lblExp").innerText = exp;
+                document.getElementById("lblCombo").innerText = combo;
+
+                if(combo > highScore) {
+                    highScore = combo; document.getElementById("lblHighScore").innerText = highScore;
+                    localStorage.setItem("boki_highScore", highScore);
+                    alert(`🎉正解！【${combo}コンボ達成！】${timeMsg}\n🚀ハイスコア更新です！\n\n💡解説: ${currentQuestion.exp}`);
+                } else {
+                    alert(`🎉正解！【${combo}コンボ連続中！】${timeMsg}\n\n💡解説: ${currentQuestion.exp}`);
+                }
+                updateLevel();
+            } else {
+                combo = 0; document.getElementById("lblCombo").innerText = combo;
+                if(currentQuestion.isBook) {
+                    alert(`😱不正解！\n正解は…\n【正しい帳簿・知識】 ${currentQuestion.ans.join(" と ")}\n\n💡解説: ${currentQuestion.exp}`);
+                } else {
+                    const getAnswerStr = (arr) => arr.map(e => `${e.sub} ${e.amt.toLocaleString()}円`).join(" / ");
+                    alert(`😱不正解！\n正解は…\n【借方】${getAnswerStr(currentQuestion.dr)}\n【貸方】${getAnswerStr(currentQuestion.cr)}\n\n💡解説: ${currentQuestion.exp}`);
+                }
+            }
+
+            if (!isShuffleMode) { currentIndex++; }
+            nextQuestion(false);
+        }
+
+        function finishAndShowReview() {
+            if(gameHistory.length === 0) { alert("まだ1問も解いていないため、レビューはありません。"); goToTitle(); return; }
+
+            document.getElementById("gameScreen").classList.add("hidden");
+            document.getElementById("reviewScreen").classList.remove("hidden");
+
+            const totalCount = gameHistory.length;
+            const correctCount = gameHistory.filter(h => h.isCorrect).length;
+            const rate = Math.round((correctCount / totalCount) * 100);
+
+            document.getElementById("revTotal").innerText = totalCount;
+            document.getElementById("revCorrect").innerText = correctCount;
+            document.getElementById("revRate").innerText = `${rate}%`;
+
+            const container = document.getElementById("reviewListContainer");
+            container.innerHTML = "";
+
+            gameHistory.forEach((hist, index) => {
+                const item = document.createElement("div");
+                item.className = `review-item ${hist.isCorrect ? 'correct' : 'incorrect'}`;
+
+                let userAnsHtml = ""; let correctAnsHtml = "";
+
+                if(hist.question.isBook) {
+                    userAnsHtml = `【選択回答】 ${hist.userDr[0].sub}`;
+                    correctAnsHtml = `【正しい回答】 ${hist.question.ans.join(" , ")}`;
+                } else {
+                    const renderRows = (arr) => arr.map(e => `${e.sub} (${e.amt.toLocaleString()}円)`).join(" , ");
+                    userAnsHtml = `【借方】 ${renderRows(hist.userDr)} <br> 【貸方】 ${renderRows(hist.userCr)}`;
+                    correctAnsHtml = `【借方】 ${renderRows(hist.question.dr)} <br> 【貸方】 ${renderRows(hist.question.cr)}`;
+                }
+
+                item.innerHTML = `
+                    <div class="review-badge">${hist.isCorrect ? '◯ 正解' : '✕ 不正解'}</div>
+                    <div class="review-text">第 ${index + 1} 挑戦目 (問 ${hist.question.id}): ${hist.question.text}</div>
+                    <div class="review-detail">👉 <span>あなたの回答:</span><br> ${userAnsHtml} </div>
+                    <div class="review-detail">✅ <span>正しい解答:</span><br> ${correctAnsHtml} </div>
+                    <div class="review-explanation">💡 <span>ワンポイント解説:</span><br> ${hist.question.exp} </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateLevel() {
+            let lv = "Lv.1（未経験者）";
+            if(exp >= 40) lv = "Lv.5（簿記マスター）";
+            else if(exp >= 25) lv = "Lv.4（一人前会計士）";
+            else if(exp >= 12) lv = "Lv.3（見習い経理）";
+            else if(exp >= 5)  lv = "Lv.2（簿記の卵）";
+            document.getElementById("lblLevel").innerText = lv;
+        }
+
+        function toggleTimer() {
+            timerOn = !timerOn; const btn = document.getElementById("btnTimerToggle");
+            if(timerOn) {
+                btn.innerText = "ON"; btn.style.background = "#2ecc71"; startTime = new Date();
+            } else {
+                btn.innerText = "OFF"; btn.style.background = "#444"; document.getElementById("lblTime").innerText = "- 秒";
+            }
+        }
+
+        function goToTitle() {
+            if(confirm("タイトル画面に戻りますか？\n（今回の履歴はリセットされます）")) {
+                document.getElementById("gameScreen").classList.add("hidden");
+                document.getElementById("titleScreen").classList.remove("hidden");
+                toggleModeUI();
+            }
+        }
+
+        function backToTitleFromReview() {
+            document.getElementById("reviewScreen").classList.add("hidden");
+            document.getElementById("titleScreen").classList.remove("hidden");
+            toggleModeUI();
+        }
+
+        function endGameTitle() {
+            alert("アプリケーションを終了します。\nブラウザのタブを閉じてください。お疲れ様でした！");
+        }
+    </script>
+</body>
+</html>
